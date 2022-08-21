@@ -1,0 +1,256 @@
+{
+  "connectivityMap": {
+    "12": 5,
+    "8": 6,
+    "4": 5,
+    "11": 6,
+    "9": 4,
+    "13": 4,
+    "5": 4,
+    "10": 4,
+    "6": 5,
+    "1": 7,
+    "0": 5,
+    "2": 6,
+    "7": 3,
+    "3": 4
+  },
+  "edges": [{
+    "endpoints": [{
+      "id": 0
+    }, {
+      "id": 3
+    }]
+  }, {
+    "endpoints": [{
+      "id": 0
+    }, {
+      "id": 4
+    }]
+  }, {
+    "endpoints": [{
+      "id": 0
+    }, {
+      "id": 8
+    }]
+  }, {
+    "endpoints": [{
+      "id": 0
+    }, {
+      "id": 11
+    }]
+  }, {
+    "endpoints": [{
+      "id": 0
+    }, {
+      "id": 13
+    }]
+  }, {
+    "endpoints": [{
+      "id": 1
+    }, {
+      "id": 3
+    }]
+  }, {
+    "endpoints": [{
+      "id": 1
+    }, {
+      "id": 4
+    }]
+  }, {
+    "endpoints": [{
+      "id": 1
+    }, {
+      "id": 5
+    }]
+  }, {
+    "endpoints": [{
+      "id": 1
+    }, {
+      "id": 6
+    }]
+  }, {
+    "endpoints": [{
+      "id": 1
+    }, {
+      "id": 7
+    }]
+  }, {
+    "endpoints": [{
+      "id": 1
+    }, {
+      "id": 8
+    }]
+  }, {
+    "endpoints": [{
+      "id": 1
+    }, {
+      "id": 13
+    }]
+  }, {
+    "endpoints": [{
+      "id": 2
+    }, {
+      "id": 3
+    }]
+  }, {
+    "endpoints": [{
+      "id": 2
+    }, {
+      "id": 4
+    }]
+  }, {
+    "endpoints": [{
+      "id": 2
+    }, {
+      "id": 6
+    }]
+  }, {
+    "endpoints": [{
+      "id": 2
+    }, {
+      "id": 9
+    }]
+  }, {
+    "endpoints": [{
+      "id": 2
+    }, {
+      "id": 11
+    }]
+  }, {
+    "endpoints": [{
+      "id": 2
+    }, {
+      "id": 12
+    }]
+  }, {
+    "endpoints": [{
+      "id": 3
+    }, {
+      "id": 6
+    }]
+  }, {
+    "endpoints": [{
+      "id": 4
+    }, {
+      "id": 7
+    }]
+  }, {
+    "endpoints": [{
+      "id": 4
+    }, {
+      "id": 10
+    }]
+  }, {
+    "endpoints": [{
+      "id": 5
+    }, {
+      "id": 9
+    }]
+  }, {
+    "endpoints": [{
+      "id": 5
+    }, {
+      "id": 11
+    }]
+  }, {
+    "endpoints": [{
+      "id": 5
+    }, {
+      "id": 12
+    }]
+  }, {
+    "endpoints": [{
+      "id": 6
+    }, {
+      "id": 8
+    }]
+  }, {
+    "endpoints": [{
+      "id": 6
+    }, {
+      "id": 12
+    }]
+  }, {
+    "endpoints": [{
+      "id": 7
+    }, {
+      "id": 10
+    }]
+  }, {
+    "endpoints": [{
+      "id": 8
+    }, {
+      "id": 9
+    }]
+  }, {
+    "endpoints": [{
+      "id": 8
+    }, {
+      "id": 10
+    }]
+  }, {
+    "endpoints": [{
+      "id": 8
+    }, {
+      "id": 11
+    }]
+  }, {
+    "endpoints": [{
+      "id": 9
+    }, {
+      "id": 13
+    }]
+  }, {
+    "endpoints": [{
+      "id": 10
+    }, {
+      "id": 11
+    }]
+  }, {
+    "endpoints": [{
+      "id": 11
+    }, {
+      "id": 12
+    }]
+  }, {
+    "endpoints": [{
+      "id": 12
+    }, {
+      "id": 13
+    }]
+  }],
+  "hamiltonian": true,
+  "identifier": 33109,
+  "recursions": -1,
+  "size": 14,
+  "vertices": [{
+    "id": 0
+  }, {
+    "id": 1
+  }, {
+    "id": 2
+  }, {
+    "id": 3
+  }, {
+    "id": 4
+  }, {
+    "id": 5
+  }, {
+    "id": 6
+  }, {
+    "id": 7
+  }, {
+    "id": 8
+  }, {
+    "id": 9
+  }, {
+    "id": 10
+  }, {
+    "id": 11
+  }, {
+    "id": 12
+  }, {
+    "id": 13
+  }]
+}
