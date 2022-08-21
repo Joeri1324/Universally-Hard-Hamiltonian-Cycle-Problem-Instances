@@ -7,4 +7,7 @@ The dataset of 91,000 random graphs of v=14 can be accessed in [link](indexed-14
 ## Images
 Performance of 6 algorithms on the 91,000 graphs in the dataset, compared with the top instances evolved via a PPA algorithm.
 
-![recursions](images/figure_2.png)`z
+![recursions](images/figure_2.png)
+
+The hardest non-hamiltonian instance on the right with the hardest hamiltonian instances on the left.
+![recursions](images/graphs.png)
