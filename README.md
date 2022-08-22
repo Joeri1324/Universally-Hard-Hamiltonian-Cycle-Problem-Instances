@@ -14,7 +14,7 @@ The files are named `{index}.json` going from 0 to 90,999. For each possible edg
 are ordered by graph density.
 
 ## Results
-A tabular overview of our results can be found in [results.xlsx](results/results.xlsx) or [results.ods](results/results.ods) depending on the program you use for vieweing tabular data.
+A tabular overview of our results can be found in [results.xlsx](results/results.xlsx) or [results.ods](results/results.ods) depending on the program you use for viewing tabular data.
 
 ## Images
 **Performance of 6 algorithms on the 91,000 graphs in the dataset, compared with the top instances evolved via a PPA algorithm.**
