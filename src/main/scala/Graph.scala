@@ -1,4 +1,4 @@
-package experiment
+package graphs
 
 import spray.json._
 import DefaultJsonProtocol._
@@ -12,15 +12,16 @@ import scala.util.Try
 case class Vertex(id: Int)
 case class Endpoint(id: Int)
 case class Edges(endpoints: List[Endpoint])
+
+
 case class Graph(
   identifier:      Int, 
   vertices:        List[Vertex], 
   edges:           List[Edges], 
   connectivityMap: Map[String, Int],
   size:            Int,
-  recursions:      Int,
-  hamiltonian:     Boolean,
-  var path:        List[Int] = Nil,
+  recursions:      Option[Int],
+  hamiltonian:     Option[Boolean],
 ) {
 
   def array = {
@@ -35,6 +36,33 @@ case class Graph(
     graph
   }
 
+  // def randomMutation = {
+  //   val random = scala.util.Random
+
+  //   val edgeset = { for (e <- edges) yield (e.endpoints(0).id, e.endpoints(1).id) } toSet
+
+  //   val complement = for (
+  //     i <- 0 until size;
+  //     j <- 0 until size; 
+  //     if !edgeset.contains((i, j)) && !edgeset.contains((j, i)) && i != j && i < j
+  //   ) yield (i, j)
+
+  //   println(edges.size * complement.size)
+
+  //   val deleteEdge = random.nextInt(edges.size)
+  //   val newEdge    = random.nextInt(complement.size)
+
+  //   val n = Edges(List(Endpoint(complement(newEdge)._1), Endpoint(complement(newEdge)._2)))
+  //   val newEdges = edges.slice(0, deleteEdge) ::: edges.slice(deleteEdge + 1, edges.size)
+
+  //   (
+  //     Graph(identifier, vertices, n :: newEdges, connectivityMap, size),
+  //     edges(deleteEdge),
+  //     complement(newEdge)
+  //   )
+  // }
+
+
   def relativeEdgeAmount = {
     edges.size.toFloat / size * 2
   }
@@ -46,14 +74,25 @@ object MyJsonProtocol extends DefaultJsonProtocol {
   implicit val edgesFormat    = jsonFormat(Edges, "endpoints")
   implicit val vertexFormat   = jsonFormat(Vertex, "id")
   implicit val graphFormat    = jsonFormat(Graph, "identifier", "vertices", "edges",
-    "connectivityMap", "size", "recursions", "hamiltonian", "path")
+    "connectivityMap", "size", "recursions", "hamiltonian")
   implicit object graphListJsonFormat extends RootJsonFormat[GraphList] {
     def read(value: JsValue) = GraphList(value.convertTo[List[Graph]])
+
     def write(value: GraphList) = JsArray(
       value.graphs.map(graph => JsObject(
-        "hamiltonian" -> JsNumber({ if (graph.hamiltonian) 1 else 0 }),
+        "hamiltonian" -> {
+          graph.hamiltonian match {
+            case Some(ham) => JsBoolean(ham)
+            case _ => JsNull
+          }
+        },
         "identifier" -> JsNumber(graph.identifier),
-        "recursions" -> JsNumber(graph.recursions),
+        "recursions" -> {
+          graph.recursions match {
+            case Some(rec) => JsNumber(rec)
+            case _ => JsNull
+          }
+        },
         "vertices"   -> JsArray(
           graph.vertices.map(v => JsObject("id" -> JsNumber(v.id)))
         ),
@@ -66,8 +105,7 @@ object MyJsonProtocol extends DefaultJsonProtocol {
         ),
         "connectivityMap" -> JsObject(graph.connectivityMap.map(c => {
           c._1 -> JsNumber(c._2)
-        })),
-        "path" -> JsArray(graph.path.map(x => JsNumber(x)))
+        }))
       ))
     )
   } 
@@ -84,9 +122,35 @@ object GraphReader {
       .parseJson
       .convertTo[Graph]
 
+  def graphsFromFile(fileName: String) = {
+    val read = scala.io.Source.fromFile(fileName)
+      .mkString
+      .parseJson
+      .convertTo[GraphList]
+      .graphs
+      .toList
+
+    for {
+      graph <- read
+    } yield graph
+  }
+
+  def graphsFromFolder(folder: String) = {
+    def handleFile(name: String) = 
+      scala.io.Source.fromFile(name)
+        .mkString
+        .parseJson
+        .convertTo[Graph]
+
+    for {
+      filename <- new File(folder).listFiles
+      // graph    <- Some(handleFile(filename.toString))
+    } yield filename
+  }
+
 }
 
-object GraphGenerator {
+object GraphGenerator extends App {
 
   /** Generates a graph represented as an Array[Array[Int]] of size [size]
     *
@@ -127,59 +191,6 @@ object GraphGenerator {
     else                   graph
   }
 
-  def genGraphWithHamiltonCycle(size: Int, amountOfEdges: Int): Array[Array[Int]] = {
-    val indices = { for (
-      i <- 0 until size; 
-      j <- 0 until size;
-      if(i > j)) yield (i, j) }.toVector
-    var graph =
-      {for {i <- 0 until size} yield {for {j <- 0 until size} yield 0} toArray} toArray
-
-    for (i <- 0 until (size - 1)) {
-      graph = graph
-        .updated(i, graph(i).updated(i + 1, 1))
-        .updated(i + 1, graph(i + 1).updated(i, 1))
-    }
-    graph = graph
-        .updated(size - 1, graph(size - 1).updated(0, 1))
-        .updated(0, graph(0).updated(size - 1, 1))
-
-    val r = scala.util.Random
-
-    def recursiveGenGraph(currentEdges: Int, graph: Array[Array[Int]]): Array[Array[Int]] = {
-      val edges = for (
-        i <- graph.indices;
-        j <- graph.indices;
-        if graph(i)(j) == 1 && i < j
-      ) yield (i, j)
-
-      val indices = for (
-        i <- 0 until graph.size;
-        j <- 0 until graph.size; 
-        if !edges.contains((i, j)) && !edges.contains((j, i)) && i != j && i < j
-      ) yield (i, j)
-
-      if (currentEdges == amountOfEdges || indices.isEmpty) graph
-      else {
-        val index   = r.nextInt(indices.size)
-        val newEdge = indices(index)
-        recursiveGenGraph(
-          currentEdges + 1,
-          graph
-            .updated(newEdge._1, graph(newEdge._1).updated(newEdge._2, 1))
-            .updated(newEdge._2, graph(newEdge._2).updated(newEdge._1, 1)))
-      }
-    }
-    
-    return recursiveGenGraph(12, graph)
-  }
-
-  def printGraph(graph: Array[Array[Int]]) = {
-    for (row <- graph) {
-      println(row.mkString)
-    }
-  }
-
   /** Writes filecontent to path and generated filename based on the id.
     * 
     * If the folders in path do not exist yet they are created.
@@ -197,7 +208,7 @@ object GraphGenerator {
 
   /** Converts graph to json format as string.
    */
-  def graphToJson(identifier: Int, graph: Array[Array[Int]], recursions: Int, hamiltonian: Boolean, path: List[Int]): String = {
+  def graphToJson(identifier: Int, graph: Array[Array[Int]], recursions: Int, hamiltonian: Boolean): String = {
     val vertices = { for (i <- graph.indices) yield Vertex(i) } toList
     val edges = { for (
       i <- graph.indices;
@@ -206,22 +217,23 @@ object GraphGenerator {
     ) yield(Edges(List(Endpoint(i), Endpoint(j)))) } toList
     val degreeMap = { for (i <- graph.indices) yield (i.toString, graph(i).count(_ == 1)) } toMap
 
-    Graph(identifier, vertices, edges, degreeMap, graph.size, recursions, hamiltonian, path)
+    Graph(identifier, vertices, edges, degreeMap, graph.size, Some(recursions), Some(hamiltonian))
       .toJson
       .prettyPrint
   }
 
   // require(Try(args(0).toInt).isSuccess, "Input graph size should be int")
-  // val graphSize      = args(0).toInt
-  // val amountOfGraphs = 20
-  // val maxEdges       = {0 to (graphSize - 1)}.reduce(_ + _)
+  val graphSize      = 14
+  val amountOfGraphs = 1000
+  val maxEdges       = {0 to (graphSize - 1)}.reduce(_ + _)
 
-  // for {
-  //   amountOfEdges <- 1 to maxEdges;
-  //   graphNumber   <- 0 to amountOfGraphs;
-  //   graphId       <- Some(((amountOfEdges - 1) * amountOfGraphs) + graphNumber)
-  // } {
-  //   val json = graphToJson(graphId, genGraph(graphSize, amountOfEdges))
-  //   writeGraphToFile(s"src/main/resources/indexed-$graphSize-node-test-set", graphId, json)
-  // }
+  for {
+    amountOfEdges <- 1 to maxEdges;
+    graphNumber   <- 0 to amountOfGraphs;
+    graphId       <- Some(((amountOfEdges - 1) * amountOfGraphs) + graphNumber)
+  } {
+    val json = graphToJson(graphId, genGraph(graphSize, amountOfEdges), -1, true)
+    writeGraphToFile(s"src/main/resources/indexed-$graphSize-node-test-set", graphId, json)
+  }
 }
+
