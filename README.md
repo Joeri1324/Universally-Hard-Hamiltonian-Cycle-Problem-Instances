@@ -10,7 +10,7 @@ To be able to run the code you will need [scale build tool](https://www.scala-sb
 
 ## Dataset
 The dataset of 91,000 random graphs of v=14 can be accessed at [indexed-14-node-test-set](src/main/resources/indexed-14-node-test-set).
-The files are named `{index}.json` going from 0 to 90999. For each possible edge density [0-91] there are 1000 graphs and the filenames
+The files are named `{index}.json` going from `0` to `90,999`. For each possible edge density [0-91] there are 1000 graphs and the filenames
 are ordered by graph density.
 
 ## Images
